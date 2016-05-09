@@ -1,4 +1,4 @@
-package cz.muni.fi.pb138;
+package cz.muni.fi.pb138.odssearch;
 
 /**
  * @author Marek Urban (422252)

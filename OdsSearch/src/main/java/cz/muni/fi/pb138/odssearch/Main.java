@@ -1,4 +1,4 @@
-package cz.muni.fi.pb138;
+package cz.muni.fi.pb138.odssearch;
 
 import org.odftoolkit.simple.SpreadsheetDocument;
 
@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Configuring ODS module for default input file [products_small.ods] ...");
 
         String filePath = "products_small.ods";
 

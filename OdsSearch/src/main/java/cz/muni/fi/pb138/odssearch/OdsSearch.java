@@ -1,4 +1,4 @@
-package cz.muni.fi.pb138;
+package cz.muni.fi.pb138.odssearch;
 
 import org.odftoolkit.simple.SpreadsheetDocument;
 import org.odftoolkit.simple.table.Cell;
@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The OdsSearch class implements an application that can configure input file of type ODS and allows
- * to search by a keyword in all sheets of such mDocument with results saved to object attribute
+ * The OdsSearch class allows searching selected expressions in Open Spreadsheet Document files.
  *
  * @author Marek Urban (422252), Marek Abaffy (422572)
  * @version 1.0
@@ -31,6 +30,12 @@ public class OdsSearch {
         this.mExactMatch = mExactMatch;
     }
 
+    /**
+     * Method searches expression in open spreadsheet document file.
+     *
+     * @param expression Expression to be searched.
+     * @return List of query items.
+     */
     public List<QueryItem> search(String expression) {
         List<QueryItem> result = new ArrayList<>();
 
@@ -41,6 +46,13 @@ public class OdsSearch {
         return result;
     }
 
+    /**
+     * Method searches expression in open spreadsheet document table.
+     *
+     * @param table      Table to search expression in.
+     * @param expression Expression to be searched.
+     * @return List of query items.
+     */
     private List<QueryItem> searchInTable(Table table, String expression) {
 
         List<QueryItem> result = new ArrayList<>();
@@ -68,18 +80,25 @@ public class OdsSearch {
         return result;
     }
 
-    private boolean evaluate(String string1, String string2) {
+    /**
+     * Method compares two strings. Can distinct case sensitive strings and substrings.
+     *
+     * @param s1 Original string.
+     * @param s2 String to be compared.
+     * @return
+     */
+    private boolean evaluate(String s1, String s2) {
         if (mCaseSensitive) {
             if (mExactMatch) {
-                return string1.equals(string2);
+                return s1.equals(s2);
             } else {
-                return string1.contains(string2);
+                return s1.contains(s2);
             }
         } else {
             if (mExactMatch) {
-                return string1.equalsIgnoreCase(string2);
+                return s1.equalsIgnoreCase(s2);
             } else {
-                return string1.toUpperCase().contains(string2.toUpperCase());
+                return s1.toUpperCase().contains(s2.toUpperCase());
             }
         }
     }
