@@ -37,6 +37,11 @@ public class OdsSearch {
      * @return List of query items.
      */
     public List<QueryItem> search(String expression) {
+
+        if (mDocument == null) {
+            throw new IllegalArgumentException("Document not initialized.");
+        }
+
         List<QueryItem> result = new ArrayList<>();
 
         for (Table table : mDocument.getTableList()) {
@@ -81,11 +86,11 @@ public class OdsSearch {
     }
 
     /**
-     * Method compares two strings. Can distinct case sensitive strings and substrings.
+     * Method compares two strings. Can distinct case sensitive strings and sub-strings.
      *
      * @param s1 Original string.
      * @param s2 String to be compared.
-     * @return
+     * @return True if strings fulfill conditions. False otherwise.
      */
     private boolean evaluate(String s1, String s2) {
         if (mCaseSensitive) {
