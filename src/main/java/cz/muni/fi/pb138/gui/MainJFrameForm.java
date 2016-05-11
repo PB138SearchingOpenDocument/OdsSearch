@@ -45,12 +45,18 @@ public class MainJFrameForm extends javax.swing.JFrame {
         setBorderTitle();
     }
 
+    /**
+     * Method set title in first panel
+     */
     private void setBorderTitle() {
         String titleString = BORDER_TITLE + fileNameTitle;
         TitledBorder title = BorderFactory.createTitledBorder(titleString);
         searchStringPanel.setBorder(title);
     }
     
+    /**
+     * Class for filtering ods files in file chooser
+     */
     class MyCustomFilter extends javax.swing.filechooser.FileFilter {
         @Override
         public boolean accept(File file) {
@@ -112,6 +118,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
         exactMatchCheckBox.setText("Exact match");
 
         instantSearchCheckBox.setText("Instant search");
+        instantSearchCheckBox.setEnabled(false);
 
         javax.swing.GroupLayout searchStringPanelLayout = new javax.swing.GroupLayout(searchStringPanel);
         searchStringPanel.setLayout(searchStringPanelLayout);
@@ -157,7 +164,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
         findedDataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null, null}
             },
             new String [] {
                 "Table", "Cell value", "Column name", "Column number", "Row number"
@@ -238,6 +245,10 @@ public class MainJFrameForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Event for choosing file
+     * @param evt event argument
+     */
     private void chooseFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseFileMenuItemActionPerformed
         int retValue = fileChooser.showOpenDialog(this);
         
@@ -257,10 +268,18 @@ public class MainJFrameForm extends javax.swing.JFrame {
     setBorderTitle();
     }//GEN-LAST:event_chooseFileMenuItemActionPerformed
 
+    /**
+     * Event for exiting application
+     * @param evt event argument
+     */
     private void exitProgramMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitProgramMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitProgramMenuItemActionPerformed
 
+    /**
+     * Event for start searching by clicking search button 
+     * @param evt event argument
+     */
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         if (filePath == null) {
             fileNameTitle = "The file has not been selected yet";
@@ -278,14 +297,19 @@ public class MainJFrameForm extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) findedDataTable.getModel();
                 model.getDataVector().removeAllElements();
                 
-                for (QueryItem item : items) {
-                    Object[] row = { item.getTableName(), item.getCellValue(), item.getColumnName()
-                            , item.getCol(), item.getRow() };
+                if (!items.isEmpty()) {                
+                    for (QueryItem item : items) {
+                        Object[] row = { item.getTableName(), item.getCellValue(), item.getColumnName()
+                                , item.getCol(), item.getRow() };
 
-                    model.addRow(row);
-                }
+                        model.addRow(row);
+                    }
                 
                 findedDataTable.setModel(model);
+                } else{
+                    Object[] row = { null, null, null, null, null };
+                    model.addRow(row);
+                }                
             } catch (Exception ex) {
                 Logger.getLogger(MainJFrameForm.class.getName()).log(Level.SEVERE, null, ex);
             }         
