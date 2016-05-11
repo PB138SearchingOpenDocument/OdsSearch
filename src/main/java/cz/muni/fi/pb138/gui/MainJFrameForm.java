@@ -5,17 +5,23 @@
  */
 package cz.muni.fi.pb138.gui;
 
+import cz.muni.fi.pb138.odssearch.OdsSearch;
+import cz.muni.fi.pb138.odssearch.QueryItem;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import org.odftoolkit.simple.SpreadsheetDocument;
 
 /**
  *
@@ -25,7 +31,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
     private static final String BORDER_TITLE = "Search string in file: ";
     
-    private String fileName;
+    private String filePath;
     private String fileNameTitle;
     
     /**
@@ -33,7 +39,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
      */
     public MainJFrameForm() {
         initComponents();
-        fileName = "";
+        filePath = null;
         fileNameTitle = "No selected file";
         
         setBorderTitle();
@@ -108,7 +114,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
                     .addComponent(caseSensitiveCheckBox)
                     .addComponent(exactMatchCheckBox)
                     .addComponent(instantSearchCheckBox))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         searchStringPanelLayout.setVerticalGroup(
             searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,16 +141,29 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
         findedDataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Table", "Cell value", "Column name", "Column number", "Row number"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         findedDataScrollPane.setViewportView(findedDataTable);
+        if (findedDataTable.getColumnModel().getColumnCount() > 0) {
+            findedDataTable.getColumnModel().getColumn(3).setMinWidth(100);
+            findedDataTable.getColumnModel().getColumn(3).setPreferredWidth(100);
+            findedDataTable.getColumnModel().getColumn(3).setMaxWidth(100);
+            findedDataTable.getColumnModel().getColumn(4).setMinWidth(100);
+            findedDataTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+            findedDataTable.getColumnModel().getColumn(4).setMaxWidth(100);
+        }
 
         javax.swing.GroupLayout findedDataPanelLayout = new javax.swing.GroupLayout(findedDataPanel);
         findedDataPanel.setLayout(findedDataPanelLayout);
@@ -152,15 +171,15 @@ public class MainJFrameForm extends javax.swing.JFrame {
             findedDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(findedDataPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(findedDataScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addComponent(findedDataScrollPane)
+                .addContainerGap())
         );
         findedDataPanelLayout.setVerticalGroup(
             findedDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(findedDataPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(findedDataScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(findedDataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         Menu.setText("File");
@@ -209,15 +228,15 @@ public class MainJFrameForm extends javax.swing.JFrame {
         if (retValue == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
-                fileName = file.getCanonicalPath();
+                filePath = file.getCanonicalPath();
                 fileNameTitle = file.getName();
             } catch (IOException ex) {
-                fileName = "";
+                filePath = null;
                 fileNameTitle = "Problem accessing file: " + file.getName();
             }
         } else {
-            fileName = "";
-            fileNameTitle = "File access canceled by user";        
+            filePath = null;
+            fileNameTitle = "The File access canceled by user";        
         }
     setBorderTitle();
     }//GEN-LAST:event_chooseFileMenuItemActionPerformed
@@ -227,7 +246,36 @@ public class MainJFrameForm extends javax.swing.JFrame {
     }//GEN-LAST:event_exitProgramMenuItemActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        
+        if (filePath == null) {
+            fileNameTitle = "The file has not been selected yet";
+            setBorderTitle();
+            return;
+        }
+      
+        if (searchTextField.getText().length() > 1) {
+            try {
+                SpreadsheetDocument document = SpreadsheetDocument.loadDocument(filePath);
+                OdsSearch ods = new OdsSearch(document, caseSensitiveCheckBox.isSelected(), exactMatchCheckBox.isSelected());
+                
+                List<QueryItem> items = ods.search(searchTextField.getText());
+                
+                DefaultTableModel model = (DefaultTableModel) findedDataTable.getModel();
+                model.getDataVector().removeAllElements();
+                
+                for (QueryItem item : items) {
+                    Object[] row = { item.getTableName(), item.getCellValue(), item.getColumnName()
+                            , item.getCol(), item.getRow() };
+
+                    model.addRow(row);
+                }
+                
+                findedDataTable.setModel(model);
+            } catch (Exception ex) {
+                Logger.getLogger(MainJFrameForm.class.getName()).log(Level.SEVERE, null, ex);
+            }         
+        } else {
+            JOptionPane.showMessageDialog(null, "Please enter atleast two characters.");                       
+        }            
     }//GEN-LAST:event_searchButtonActionPerformed
 
     /**
