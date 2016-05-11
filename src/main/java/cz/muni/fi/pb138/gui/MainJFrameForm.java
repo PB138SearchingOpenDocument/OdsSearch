@@ -5,17 +5,44 @@
  */
 package cz.muni.fi.pb138.gui;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
 /**
  *
- * @author Ladislav Otoupal (422520)
+ * @author Ladislav Otoupal (422520), Tomáš Ševcù (422519)
  */
 public class MainJFrameForm extends javax.swing.JFrame {
 
+    private static final String BORDER_TITLE = "Search string in file: ";
+    
+    private String fileName;
+    private String fileNameTitle;
+    
     /**
      * Creates new form MainJFrameForm
      */
     public MainJFrameForm() {
         initComponents();
+        fileName = "";
+        fileNameTitle = "No selected file";
+        
+        setBorderTitle();
+    }
+
+    private void setBorderTitle() {
+        String titleString = BORDER_TITLE + fileNameTitle;
+        TitledBorder title = BorderFactory.createTitledBorder(titleString);
+        searchStringPanel.setBorder(title);
     }
 
     /**
@@ -27,6 +54,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        fileChooser = new javax.swing.JFileChooser();
         searchStringPanel = new javax.swing.JPanel();
         searchTextField = new javax.swing.JTextField();
         searchLabel = new javax.swing.JLabel();
@@ -51,6 +79,11 @@ public class MainJFrameForm extends javax.swing.JFrame {
         searchLabel.setText("Search: ");
 
         searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
 
         caseSensitiveCheckBox.setText("Case sensitive");
 
@@ -171,12 +204,31 @@ public class MainJFrameForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void chooseFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseFileMenuItemActionPerformed
-        // TODO add your handling code here:
+        int retValue = fileChooser.showOpenDialog(this);
+        
+        if (retValue == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                fileName = file.getCanonicalPath();
+                fileNameTitle = file.getName();
+            } catch (IOException ex) {
+                fileName = "";
+                fileNameTitle = "Problem accessing file: " + file.getName();
+            }
+        } else {
+            fileName = "";
+            fileNameTitle = "File access canceled by user";        
+        }
+    setBorderTitle();
     }//GEN-LAST:event_chooseFileMenuItemActionPerformed
 
     private void exitProgramMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitProgramMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitProgramMenuItemActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        
+    }//GEN-LAST:event_searchButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,6 +272,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem chooseFileMenuItem;
     private javax.swing.JCheckBox exactMatchCheckBox;
     private javax.swing.JMenuItem exitProgramMenuItem;
+    private javax.swing.JFileChooser fileChooser;
     private javax.swing.JPanel findedDataPanel;
     private javax.swing.JScrollPane findedDataScrollPane;
     private javax.swing.JTable findedDataTable;
