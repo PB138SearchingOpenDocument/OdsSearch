@@ -1,1 +1,1 @@
-# OdsSearch [![Build Status](https://travis-ci.org/PB138SearchingOpenDocument/Searching-data-in-a-file-in-Open-Document-Spreadsheet-Java-.svg?branch=master)](https://travis-ci.org/PB138SearchingOpenDocument/Searching-data-in-a-file-in-Open-Document-Spreadsheet-Java-)
+# OdsSearch [![Build Status](https://travis-ci.org/PB138SearchingOpenDocument/OdsSearch.svg?branch=master)](https://travis-ci.org/PB138SearchingOpenDocument/OdsSearch)
