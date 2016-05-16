@@ -25,10 +25,11 @@ public class OdsSearch {
         this.mDocument = document;
     }
 
-    public OdsSearch(SpreadsheetDocument document, boolean mCaseSensitive, boolean mExactMatch) {
+    public OdsSearch(SpreadsheetDocument document, boolean mCaseSensitive, boolean mExactMatch, boolean mRegexMatch) {
         this.mDocument = document;
         this.mCaseSensitive = mCaseSensitive;
         this.mExactMatch = mExactMatch;
+        this.mRegexMatch = mRegexMatch;
     }
 
     public boolean isCaseSensitive() {
@@ -118,15 +119,15 @@ public class OdsSearch {
      * @return True if strings fulfill conditions. False otherwise.
      */
     private boolean evaluate(String s1, String s2) {
-        if(mRegexMatch){
+        if (mRegexMatch) {
             return s1.matches(s2);
         }
 
         if (mCaseSensitive) {
             return mExactMatch ? s1.equals(s2) : s1.contains(s2);
-        } else {
-            return mExactMatch ? s1.equalsIgnoreCase(s2) : s1.toUpperCase().contains(s2.toUpperCase());
         }
+
+        return mExactMatch ? s1.equalsIgnoreCase(s2) : s1.toUpperCase().contains(s2.toUpperCase());
     }
 
 }
