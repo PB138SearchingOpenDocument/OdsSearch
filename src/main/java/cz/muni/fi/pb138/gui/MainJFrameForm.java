@@ -7,25 +7,24 @@ package cz.muni.fi.pb138.gui;
 
 import cz.muni.fi.pb138.odssearch.OdsSearch;
 import cz.muni.fi.pb138.odssearch.QueryItem;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
+import org.odftoolkit.simple.SpreadsheetDocument;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
-import org.odftoolkit.simple.SpreadsheetDocument;
+
+
+// TODO: CheckboxActionPerformed - block other checkboxes when regex is selected ()
+// TODO: Implement thread for searching
 
 /**
  *
- * @author Ladislav Otoupal (422520), Tomáš Ševcù (422519)
+ * @author Ladislav Otoupal (422520), Tomï¿½ ï¿½evcï¿½ (422519)
  */
 public class MainJFrameForm extends javax.swing.JFrame {
 
@@ -87,6 +86,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
         searchButton = new javax.swing.JButton();
         caseSensitiveCheckBox = new javax.swing.JCheckBox();
         exactMatchCheckBox = new javax.swing.JCheckBox();
+        regexMatchCheckBox = new javax.swing.JCheckBox();
         instantSearchCheckBox = new javax.swing.JCheckBox();
         findedDataPanel = new javax.swing.JPanel();
         findedDataScrollPane = new javax.swing.JScrollPane();
@@ -116,6 +116,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
         caseSensitiveCheckBox.setText("Case sensitive");
 
         exactMatchCheckBox.setText("Exact match");
+        regexMatchCheckBox.setText("Regex match");
 
         instantSearchCheckBox.setText("Instant search");
         instantSearchCheckBox.setEnabled(false);
@@ -136,6 +137,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
                 .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(caseSensitiveCheckBox)
                     .addComponent(exactMatchCheckBox)
+                    .addComponent(regexMatchCheckBox)
                     .addComponent(instantSearchCheckBox))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
@@ -154,9 +156,11 @@ public class MainJFrameForm extends javax.swing.JFrame {
                         .addGap(21, 21, 21)
                         .addComponent(caseSensitiveCheckBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(exactMatchCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(instantSearchCheckBox)))
+                            .addComponent(exactMatchCheckBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(regexMatchCheckBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(instantSearchCheckBox)))
                 .addGap(39, 39, 39))
         );
 
@@ -290,7 +294,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
         if (searchTextField.getText().length() > 1) {
             try {
                 SpreadsheetDocument document = SpreadsheetDocument.loadDocument(filePath);
-                OdsSearch ods = new OdsSearch(document, caseSensitiveCheckBox.isSelected(), exactMatchCheckBox.isSelected());
+                OdsSearch ods = new OdsSearch(document, caseSensitiveCheckBox.isSelected(), exactMatchCheckBox.isSelected(), regexMatchCheckBox.isSelected());
                 
                 List<QueryItem> items = ods.search(searchTextField.getText());
                 
@@ -359,6 +363,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private javax.swing.JCheckBox caseSensitiveCheckBox;
     private javax.swing.JMenuItem chooseFileMenuItem;
     private javax.swing.JCheckBox exactMatchCheckBox;
+    private javax.swing.JCheckBox regexMatchCheckBox;
     private javax.swing.JMenuItem exitProgramMenuItem;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JPanel findedDataPanel;
