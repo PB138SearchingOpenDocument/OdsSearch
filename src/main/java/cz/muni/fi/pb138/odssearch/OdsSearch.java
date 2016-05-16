@@ -18,6 +18,7 @@ public class OdsSearch {
 
     private boolean mCaseSensitive = false;
     private boolean mExactMatch = false;
+    private boolean mRegexMatch = false;
     private SpreadsheetDocument mDocument;
 
     public OdsSearch(SpreadsheetDocument document) {
@@ -28,6 +29,30 @@ public class OdsSearch {
         this.mDocument = document;
         this.mCaseSensitive = mCaseSensitive;
         this.mExactMatch = mExactMatch;
+    }
+
+    public boolean isCaseSensitive() {
+        return mCaseSensitive;
+    }
+
+    public void setCaseSensitive(boolean mCaseSensitive) {
+        this.mCaseSensitive = mCaseSensitive;
+    }
+
+    public boolean isExactMatch() {
+        return mExactMatch;
+    }
+
+    public void setExactMatch(boolean mExactMatch) {
+        this.mExactMatch = mExactMatch;
+    }
+
+    public boolean isRegexMatch() {
+        return mRegexMatch;
+    }
+
+    public void setRegexMatch(boolean mRegexMatch) {
+        this.mRegexMatch = mRegexMatch;
     }
 
     /**
@@ -93,18 +118,14 @@ public class OdsSearch {
      * @return True if strings fulfill conditions. False otherwise.
      */
     private boolean evaluate(String s1, String s2) {
+        if(mRegexMatch){
+            return s1.matches(s2);
+        }
+
         if (mCaseSensitive) {
-            if (mExactMatch) {
-                return s1.equals(s2);
-            } else {
-                return s1.contains(s2);
-            }
+            return mExactMatch ? s1.equals(s2) : s1.contains(s2);
         } else {
-            if (mExactMatch) {
-                return s1.equalsIgnoreCase(s2);
-            } else {
-                return s1.toUpperCase().contains(s2.toUpperCase());
-            }
+            return mExactMatch ? s1.equalsIgnoreCase(s2) : s1.toUpperCase().contains(s2.toUpperCase());
         }
     }
 
