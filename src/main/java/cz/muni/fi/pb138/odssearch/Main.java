@@ -18,7 +18,7 @@ public class Main {
 
         try {
             SpreadsheetDocument document = SpreadsheetDocument.loadDocument(filePath);
-            OdsSearch ods = new OdsSearch(document, true, true);
+            OdsSearch ods = new OdsSearch(document, true, true, true);
 
             String input = getInput();
 
