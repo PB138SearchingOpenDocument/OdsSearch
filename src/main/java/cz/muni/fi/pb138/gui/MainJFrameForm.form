@@ -102,6 +102,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="caseSensitiveCheckBox" min="-2" max="-2" attributes="0"/>
                       <Component id="exactMatchCheckBox" min="-2" max="-2" attributes="0"/>
+                      <Component id="regexMatchCheckBox" min="-2" max="-2" attributes="0"/>
                       <Component id="instantSearchCheckBox" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="36" max="32767" attributes="0"/>
@@ -126,6 +127,8 @@
                           <Component id="caseSensitiveCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="exactMatchCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="regexMatchCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="instantSearchCheckBox" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -162,6 +165,11 @@
         <Component class="javax.swing.JCheckBox" name="exactMatchCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="Exact match"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="regexMatchCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Regex match"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="instantSearchCheckBox">
