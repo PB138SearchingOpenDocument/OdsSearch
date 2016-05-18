@@ -7,6 +7,9 @@ package cz.muni.fi.pb138.gui;
 
 import cz.muni.fi.pb138.odssearch.OdsSearch;
 import cz.muni.fi.pb138.odssearch.QueryItem;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import org.odftoolkit.simple.SpreadsheetDocument;
 
 import javax.swing.*;
@@ -72,7 +75,6 @@ public class MainJFrameForm extends javax.swing.JFrame {
         }
     } 
     
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -106,6 +108,15 @@ public class MainJFrameForm extends javax.swing.JFrame {
         setTitle("ODS Search");
 
         searchStringPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search string"));
+
+        searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchTextFieldKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchTextFieldKeyReleased(evt);
+            }
+        });
 
         searchLabel.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         searchLabel.setText("Search: ");
@@ -405,6 +416,18 @@ public class MainJFrameForm extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_instantSearchCheckBoxActionPerformed
+
+    private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            searchButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_searchTextFieldKeyPressed
+
+    private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
+        if(instantSearchCheckBox.isSelected() & searchTextField.getText().length() > 1){
+            searchButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_searchTextFieldKeyReleased
 
     /**
      * @param args the command line arguments
