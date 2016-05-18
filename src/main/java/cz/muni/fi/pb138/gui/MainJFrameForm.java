@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+
 // TODO: CheckboxActionPerformed - block other checkboxes when regex is selected ()
 // TODO: Implement thread for searching
 
@@ -32,6 +33,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
     
     private String filePath;
     private String fileNameTitle;
+    
     
     /**
      * Creates new form MainJFrameForm
@@ -56,7 +58,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
     /**
      * Class for filtering ods files in file chooser
      */
-    class MyCustomFilter extends javax.swing.filechooser.FileFilter {
+    private class MyCustomFilter extends javax.swing.filechooser.FileFilter {
         @Override
         public boolean accept(File file) {
             // Allow only directories, or files with ".txt" extension
@@ -69,6 +71,8 @@ public class MainJFrameForm extends javax.swing.JFrame {
             return "Open documents (*.ods)";
         }
     } 
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -395,11 +399,10 @@ public class MainJFrameForm extends javax.swing.JFrame {
             regexMatchCheckBox.setEnabled(false);
             regexMatchCheckBox.setSelected(false);
         }else{
-            if(caseSensitiveCheckBox.isSelected() || exactMatchCheckBox.isSelected()){
-                regexMatchCheckBox.setEnabled(false);
-            }else{
+            if(!(caseSensitiveCheckBox.isSelected() || exactMatchCheckBox.isSelected())){
                 regexMatchCheckBox.setEnabled(true);
             }
+            
         }
     }//GEN-LAST:event_instantSearchCheckBoxActionPerformed
 
