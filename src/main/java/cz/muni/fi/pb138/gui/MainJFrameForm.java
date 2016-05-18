@@ -114,9 +114,25 @@ public class MainJFrameForm extends javax.swing.JFrame {
         });
 
         caseSensitiveCheckBox.setText("Case sensitive");
+        caseSensitiveCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                caseSensitiveCheckBoxActionPerformed(evt);
+            }
+        });
 
         exactMatchCheckBox.setText("Exact match");
+        exactMatchCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exactMatchCheckBoxActionPerformed(evt);
+            }
+        });
+
         regexMatchCheckBox.setText("Regex match");
+        regexMatchCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                regexMatchCheckBoxActionPerformed(evt);
+            }
+        });
 
         instantSearchCheckBox.setText("Instant search");
         instantSearchCheckBox.setEnabled(false);
@@ -156,11 +172,11 @@ public class MainJFrameForm extends javax.swing.JFrame {
                         .addGap(21, 21, 21)
                         .addComponent(caseSensitiveCheckBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(exactMatchCheckBox)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(regexMatchCheckBox)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(instantSearchCheckBox)))
+                        .addComponent(exactMatchCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(regexMatchCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(instantSearchCheckBox)))
                 .addGap(39, 39, 39))
         );
 
@@ -322,6 +338,42 @@ public class MainJFrameForm extends javax.swing.JFrame {
         }            
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    private void exactMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactMatchCheckBoxActionPerformed
+        if(exactMatchCheckBox.isSelected()){
+            caseSensitiveCheckBox.setEnabled(false);
+            caseSensitiveCheckBox.setSelected(false);
+            regexMatchCheckBox.setEnabled(false);
+            regexMatchCheckBox.setSelected(false);
+        }else{
+            caseSensitiveCheckBox.setEnabled(true);
+            regexMatchCheckBox.setEnabled(true);
+        }
+    }//GEN-LAST:event_exactMatchCheckBoxActionPerformed
+
+    private void caseSensitiveCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_caseSensitiveCheckBoxActionPerformed
+        if(caseSensitiveCheckBox.isSelected()){
+            exactMatchCheckBox.setEnabled(false);
+            exactMatchCheckBox.setSelected(false);
+            regexMatchCheckBox.setEnabled(false);
+            regexMatchCheckBox.setSelected(false);
+        }else{
+            exactMatchCheckBox.setEnabled(true);
+            regexMatchCheckBox.setEnabled(true);
+        }
+    }//GEN-LAST:event_caseSensitiveCheckBoxActionPerformed
+
+    private void regexMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regexMatchCheckBoxActionPerformed
+        if(regexMatchCheckBox.isSelected()){
+            caseSensitiveCheckBox.setEnabled(false);
+            caseSensitiveCheckBox.setSelected(false);
+            exactMatchCheckBox.setEnabled(false);
+            exactMatchCheckBox.setSelected(false);
+        }else{
+            caseSensitiveCheckBox.setEnabled(true);
+            exactMatchCheckBox.setEnabled(true);
+        }
+    }//GEN-LAST:event_regexMatchCheckBoxActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -363,13 +415,13 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private javax.swing.JCheckBox caseSensitiveCheckBox;
     private javax.swing.JMenuItem chooseFileMenuItem;
     private javax.swing.JCheckBox exactMatchCheckBox;
-    private javax.swing.JCheckBox regexMatchCheckBox;
     private javax.swing.JMenuItem exitProgramMenuItem;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JPanel findedDataPanel;
     private javax.swing.JScrollPane findedDataScrollPane;
     private javax.swing.JTable findedDataTable;
     private javax.swing.JCheckBox instantSearchCheckBox;
+    private javax.swing.JCheckBox regexMatchCheckBox;
     private javax.swing.JButton searchButton;
     private javax.swing.JLabel searchLabel;
     private javax.swing.JPanel searchStringPanel;
