@@ -135,7 +135,11 @@ public class MainJFrameForm extends javax.swing.JFrame {
         });
 
         instantSearchCheckBox.setText("Instant search");
-        instantSearchCheckBox.setEnabled(false);
+        instantSearchCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instantSearchCheckBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout searchStringPanelLayout = new javax.swing.GroupLayout(searchStringPanel);
         searchStringPanel.setLayout(searchStringPanelLayout);
@@ -345,8 +349,13 @@ public class MainJFrameForm extends javax.swing.JFrame {
             regexMatchCheckBox.setEnabled(false);
             regexMatchCheckBox.setSelected(false);
         }else{
-            caseSensitiveCheckBox.setEnabled(true);
-            regexMatchCheckBox.setEnabled(true);
+            if(instantSearchCheckBox.isSelected()){
+                caseSensitiveCheckBox.setEnabled(true);
+            }else{
+                caseSensitiveCheckBox.setEnabled(true);
+                regexMatchCheckBox.setEnabled(true);
+            }
+            
         }
     }//GEN-LAST:event_exactMatchCheckBoxActionPerformed
 
@@ -357,8 +366,12 @@ public class MainJFrameForm extends javax.swing.JFrame {
             regexMatchCheckBox.setEnabled(false);
             regexMatchCheckBox.setSelected(false);
         }else{
-            exactMatchCheckBox.setEnabled(true);
-            regexMatchCheckBox.setEnabled(true);
+            if(instantSearchCheckBox.isSelected()){
+                exactMatchCheckBox.setEnabled(true);
+            }else{
+                exactMatchCheckBox.setEnabled(true);
+                regexMatchCheckBox.setEnabled(true);
+            }
         }
     }//GEN-LAST:event_caseSensitiveCheckBoxActionPerformed
 
@@ -368,11 +381,27 @@ public class MainJFrameForm extends javax.swing.JFrame {
             caseSensitiveCheckBox.setSelected(false);
             exactMatchCheckBox.setEnabled(false);
             exactMatchCheckBox.setSelected(false);
+            instantSearchCheckBox.setEnabled(false);
+            instantSearchCheckBox.setSelected(false);
         }else{
             caseSensitiveCheckBox.setEnabled(true);
             exactMatchCheckBox.setEnabled(true);
+            instantSearchCheckBox.setEnabled(true);
         }
     }//GEN-LAST:event_regexMatchCheckBoxActionPerformed
+
+    private void instantSearchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instantSearchCheckBoxActionPerformed
+        if(instantSearchCheckBox.isSelected()){
+            regexMatchCheckBox.setEnabled(false);
+            regexMatchCheckBox.setSelected(false);
+        }else{
+            if(caseSensitiveCheckBox.isSelected() || exactMatchCheckBox.isSelected()){
+                regexMatchCheckBox.setEnabled(false);
+            }else{
+                regexMatchCheckBox.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_instantSearchCheckBoxActionPerformed
 
     /**
      * @param args the command line arguments
