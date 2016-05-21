@@ -102,9 +102,11 @@ public class OdsSearch {
                 }
 
                 if (evaluate(table.getCellByPosition(i, j).getStringValue(), expression)) {
-                    item = new QueryItem(i, j, table.getTableName(),
-                            table.getCellByPosition(i, 0).getStringValue(), cell.getStringValue());
-                    result.add(item);
+                    if (j != 0) {
+                        item = new QueryItem(i, j, table.getTableName(),
+                                table.getCellByPosition(i, 0).getStringValue(), cell.getStringValue());
+                        result.add(item);
+                    }
                 }
             }
         }
