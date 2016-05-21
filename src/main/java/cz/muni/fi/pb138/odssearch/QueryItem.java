@@ -1,11 +1,11 @@
 package cz.muni.fi.pb138.odssearch;
 
 /**
+ * QueryItem class represents field found in ods document.
+ *
  * @author Marek Urban (422252)
  */
-
 public class QueryItem {
-
     private int col;
     private int row;
     private String tableName;
@@ -62,7 +62,7 @@ public class QueryItem {
 
     @Override
     public String toString() {
-        return "Found \"" + cellValue
+        return "Query item \"" + cellValue
                 + "\" in table \"" + tableName
                 + "\" at row: " + Integer.toString(row + 1)
                 + ", column: " + Integer.toString(col + 1)

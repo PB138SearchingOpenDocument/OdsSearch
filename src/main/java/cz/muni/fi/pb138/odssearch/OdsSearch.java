@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * The OdsSearch class allows searching selected expressions in Open Spreadsheet Document files.
  *
- * @author Marek Urban (422252), Marek Abaffy (422572)
+ * @author Marek Urban (422252)
+ * @author Marek Abaffy (422572)
  * @version 1.0
  */
-
 public class OdsSearch {
 
     private boolean mCaseSensitive = false;

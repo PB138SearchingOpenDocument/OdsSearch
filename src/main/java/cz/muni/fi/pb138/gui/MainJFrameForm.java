@@ -7,45 +7,39 @@ package cz.muni.fi.pb138.gui;
 
 import cz.muni.fi.pb138.odssearch.OdsSearch;
 import cz.muni.fi.pb138.odssearch.QueryItem;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.awt.event.KeyEvent;
+
 import org.odftoolkit.simple.SpreadsheetDocument;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
-// TODO: CheckboxActionPerformed - block other checkboxes when regex is selected ()
-// TODO: Implement thread for searching
-
 /**
- *
- * @author Ladislav Otoupal (422520), Tom� �evc� (422519)
+ * @author Ladislav Otoupal (422520)
+ * @author Tomáš Ševců (422519)
  */
 public class MainJFrameForm extends javax.swing.JFrame {
 
-    private static final String BORDER_TITLE = "Search string in file: ";
-    
-    private String filePath;
-    private String fileNameTitle;
-    
-    
+    private static final String BORDER_TITLE = "Search expression in ODS file: ";
+
+    private String mFilePath;
+    private String mFileName;
+    private SpreadsheetDocument mDocument;
+
     /**
      * Creates new form MainJFrameForm
      */
     public MainJFrameForm() {
         initComponents();
-        filePath = null;
-        fileNameTitle = "No selected file";
-        
+        mFilePath = null;
+        mFileName = "No file selected";
+
         setBorderTitle();
     }
 
@@ -53,11 +47,11 @@ public class MainJFrameForm extends javax.swing.JFrame {
      * Method set title in first panel
      */
     private void setBorderTitle() {
-        String titleString = BORDER_TITLE + fileNameTitle;
+        String titleString = BORDER_TITLE + mFileName;
         TitledBorder title = BorderFactory.createTitledBorder(titleString);
         searchStringPanel.setBorder(title);
     }
-    
+
     /**
      * Class for filtering ods files in file chooser
      */
@@ -67,14 +61,15 @@ public class MainJFrameForm extends javax.swing.JFrame {
             // Allow only directories, or files with ".txt" extension
             return file.isDirectory() || file.getAbsolutePath().endsWith(".ods");
         }
+
         @Override
         public String getDescription() {
             // This description will be displayed in the dialog,
             // hard-coded = ugly, should be done via I18N
             return "Open documents (*.ods)";
         }
-    } 
-    
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,9 +89,9 @@ public class MainJFrameForm extends javax.swing.JFrame {
         exactMatchCheckBox = new javax.swing.JCheckBox();
         regexMatchCheckBox = new javax.swing.JCheckBox();
         instantSearchCheckBox = new javax.swing.JCheckBox();
-        findedDataPanel = new javax.swing.JPanel();
-        findedDataScrollPane = new javax.swing.JScrollPane();
-        findedDataTable = new javax.swing.JTable();
+        foundDataPanel = new javax.swing.JPanel();
+        foundDataScrollPane = new javax.swing.JScrollPane();
+        foundDataTable = new javax.swing.JTable();
         MenuBar = new javax.swing.JMenuBar();
         Menu = new javax.swing.JMenu();
         chooseFileMenuItem = new javax.swing.JMenuItem();
@@ -113,6 +108,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 searchTextFieldKeyPressed(evt);
             }
+
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 searchTextFieldKeyReleased(evt);
             }
@@ -159,94 +155,94 @@ public class MainJFrameForm extends javax.swing.JFrame {
         javax.swing.GroupLayout searchStringPanelLayout = new javax.swing.GroupLayout(searchStringPanel);
         searchStringPanel.setLayout(searchStringPanelLayout);
         searchStringPanelLayout.setHorizontalGroup(
-            searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchStringPanelLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(searchStringPanelLayout.createSequentialGroup()
-                        .addComponent(searchLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(caseSensitiveCheckBox)
-                    .addComponent(exactMatchCheckBox)
-                    .addComponent(regexMatchCheckBox)
-                    .addComponent(instantSearchCheckBox))
-                .addContainerGap(36, Short.MAX_VALUE))
+                searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                                .addComponent(searchLabel)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(caseSensitiveCheckBox)
+                                        .addComponent(exactMatchCheckBox)
+                                        .addComponent(regexMatchCheckBox)
+                                        .addComponent(instantSearchCheckBox))
+                                .addContainerGap(36, Short.MAX_VALUE))
         );
         searchStringPanelLayout.setVerticalGroup(
-            searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchStringPanelLayout.createSequentialGroup()
-                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(searchStringPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(searchLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(searchStringPanelLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(caseSensitiveCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(exactMatchCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(regexMatchCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(instantSearchCheckBox)))
-                .addGap(39, 39, 39))
+                searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(searchLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addGap(18, 18, 18)
+                                                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                                .addGap(21, 21, 21)
+                                                .addComponent(caseSensitiveCheckBox)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(exactMatchCheckBox)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(regexMatchCheckBox)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(instantSearchCheckBox)))
+                                .addGap(39, 39, 39))
         );
 
-        findedDataPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Finded data"));
+        foundDataPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Found fields"));
 
-        findedDataTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Table", "Cell value", "Column name", "Column number", "Row number"
-            }
+        foundDataTable.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{
+                        {null, null, null, null, null}
+                },
+                new String[]{
+                        "Table", "Cell value", "Column name", "Column number", "Row number"
+                }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            Class[] types = new Class[]{
+                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
         });
-        findedDataScrollPane.setViewportView(findedDataTable);
-        if (findedDataTable.getColumnModel().getColumnCount() > 0) {
-            findedDataTable.getColumnModel().getColumn(3).setMinWidth(100);
-            findedDataTable.getColumnModel().getColumn(3).setPreferredWidth(100);
-            findedDataTable.getColumnModel().getColumn(3).setMaxWidth(100);
-            findedDataTable.getColumnModel().getColumn(4).setMinWidth(100);
-            findedDataTable.getColumnModel().getColumn(4).setPreferredWidth(100);
-            findedDataTable.getColumnModel().getColumn(4).setMaxWidth(100);
+        foundDataScrollPane.setViewportView(foundDataTable);
+        if (foundDataTable.getColumnModel().getColumnCount() > 0) {
+            foundDataTable.getColumnModel().getColumn(3).setMinWidth(100);
+            foundDataTable.getColumnModel().getColumn(3).setPreferredWidth(100);
+            foundDataTable.getColumnModel().getColumn(3).setMaxWidth(100);
+            foundDataTable.getColumnModel().getColumn(4).setMinWidth(100);
+            foundDataTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+            foundDataTable.getColumnModel().getColumn(4).setMaxWidth(100);
         }
 
-        javax.swing.GroupLayout findedDataPanelLayout = new javax.swing.GroupLayout(findedDataPanel);
-        findedDataPanel.setLayout(findedDataPanelLayout);
-        findedDataPanelLayout.setHorizontalGroup(
-            findedDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(findedDataPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(findedDataScrollPane)
-                .addContainerGap())
+        javax.swing.GroupLayout foundDataPanelLayout = new javax.swing.GroupLayout(foundDataPanel);
+        foundDataPanel.setLayout(foundDataPanelLayout);
+        foundDataPanelLayout.setHorizontalGroup(
+                foundDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(foundDataPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(foundDataScrollPane)
+                                .addContainerGap())
         );
-        findedDataPanelLayout.setVerticalGroup(
-            findedDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(findedDataPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(findedDataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
-                .addContainerGap())
+        foundDataPanelLayout.setVerticalGroup(
+                foundDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(foundDataPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(foundDataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                                .addContainerGap())
         );
 
         Menu.setText("File");
 
-        chooseFileMenuItem.setText("Choose file");
+        chooseFileMenuItem.setText("Open file");
         chooseFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseFileMenuItemActionPerformed(evt);
@@ -269,16 +265,16 @@ public class MainJFrameForm extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(searchStringPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(findedDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(searchStringPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(foundDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(searchStringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(findedDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(searchStringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(foundDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -286,29 +282,32 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
     /**
      * Event for choosing file
+     *
      * @param evt event argument
      */
     private void chooseFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseFileMenuItemActionPerformed
         int retValue = fileChooser.showOpenDialog(this);
-        
+
         if (retValue == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
-                filePath = file.getCanonicalPath();
-                fileNameTitle = file.getName();
-            } catch (IOException ex) {
-                filePath = null;
-                fileNameTitle = "Problem accessing file: " + file.getName();
+                mFilePath = file.getCanonicalPath();
+                mFileName = file.getName();
+                mDocument = SpreadsheetDocument.loadDocument(mFilePath);
+            } catch (Exception ex) {
+                mFilePath = null;
+                JOptionPane.showMessageDialog(this,
+                        String.format("Problem accessing file %s", file.getName()), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            filePath = null;
-            fileNameTitle = "The File access canceled by user";        
+            mFilePath = null;
         }
-    setBorderTitle();
+        setBorderTitle();
     }//GEN-LAST:event_chooseFileMenuItemActionPerformed
 
     /**
      * Event for exiting application
+     *
      * @param evt event argument
      */
     private void exitProgramMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitProgramMenuItemActionPerformed
@@ -316,115 +315,101 @@ public class MainJFrameForm extends javax.swing.JFrame {
     }//GEN-LAST:event_exitProgramMenuItemActionPerformed
 
     /**
-     * Event for start searching by clicking search button 
+     * Event for start searching by clicking search button
+     *
      * @param evt event argument
      */
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        if (filePath == null) {
-            fileNameTitle = "The file has not been selected yet";
-            setBorderTitle();
+
+        if (mDocument == null) {
+            JOptionPane.showMessageDialog(this, "No file selected!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-      
+
+        if (searchTextField.getText().length() <= 1) {
+            JOptionPane.showMessageDialog(null, "Please insert at least two characters.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         if (searchTextField.getText().length() > 1) {
             try {
-                SpreadsheetDocument document = SpreadsheetDocument.loadDocument(filePath);
-                OdsSearch ods = new OdsSearch(document, caseSensitiveCheckBox.isSelected(), exactMatchCheckBox.isSelected(), regexMatchCheckBox.isSelected());
-                
-                List<QueryItem> items = ods.search(searchTextField.getText());
-                
-                DefaultTableModel model = (DefaultTableModel) findedDataTable.getModel();
+                OdsSearch odsSearch = new OdsSearch(mDocument);
+                odsSearch.setExactMatch(exactMatchCheckBox.isSelected());
+                odsSearch.setCaseSensitive(caseSensitiveCheckBox.isSelected());
+                odsSearch.setRegexMatch(regexMatchCheckBox.isSelected());
+                List<QueryItem> items = odsSearch.search(searchTextField.getText());
+
+                DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
                 model.getDataVector().removeAllElements();
-                
-                if (!items.isEmpty()) {                
+
+                if (!items.isEmpty()) {
                     for (QueryItem item : items) {
-                        Object[] row = { item.getTableName(), item.getCellValue(), item.getColumnName()
-                                , item.getCol(), item.getRow() };
+                        Object[] row = {item.getTableName(), item.getCellValue(), item.getColumnName()
+                                , item.getCol(), item.getRow()};
 
                         model.addRow(row);
                     }
-                
-                findedDataTable.setModel(model);
-                } else{
-                    Object[] row = { null, null, null, null, null };
+
+                    foundDataTable.setModel(model);
+                } else {
+                    Object[] row = {null, null, null, null, null};
                     model.addRow(row);
-                }                
+                }
             } catch (Exception ex) {
                 Logger.getLogger(MainJFrameForm.class.getName()).log(Level.SEVERE, null, ex);
-            }         
-        } else {
-            JOptionPane.showMessageDialog(null, "Please enter atleast two characters.");                       
-        }            
+            }
+        }
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void exactMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactMatchCheckBoxActionPerformed
-        if(exactMatchCheckBox.isSelected()){
-            caseSensitiveCheckBox.setEnabled(false);
-            caseSensitiveCheckBox.setSelected(false);
-            regexMatchCheckBox.setEnabled(false);
-            regexMatchCheckBox.setSelected(false);
-        }else{
-            if(instantSearchCheckBox.isSelected()){
-                caseSensitiveCheckBox.setEnabled(true);
-            }else{
-                caseSensitiveCheckBox.setEnabled(true);
-                regexMatchCheckBox.setEnabled(true);
-            }
-            
-        }
+        setRegexButtonState();
     }//GEN-LAST:event_exactMatchCheckBoxActionPerformed
 
     private void caseSensitiveCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_caseSensitiveCheckBoxActionPerformed
-        if(caseSensitiveCheckBox.isSelected()){
-            exactMatchCheckBox.setEnabled(false);
-            exactMatchCheckBox.setSelected(false);
-            regexMatchCheckBox.setEnabled(false);
-            regexMatchCheckBox.setSelected(false);
-        }else{
-            if(instantSearchCheckBox.isSelected()){
-                exactMatchCheckBox.setEnabled(true);
-            }else{
-                exactMatchCheckBox.setEnabled(true);
-                regexMatchCheckBox.setEnabled(true);
-            }
-        }
+        setRegexButtonState();
     }//GEN-LAST:event_caseSensitiveCheckBoxActionPerformed
 
+    private void setRegexButtonState() {
+        if (caseSensitiveCheckBox.isSelected() || exactMatchCheckBox.isSelected()) {
+            regexMatchCheckBox.setEnabled(false);
+            regexMatchCheckBox.setSelected(false);
+        } else {
+            regexMatchCheckBox.setEnabled(true);
+        }
+    }
+
     private void regexMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regexMatchCheckBoxActionPerformed
-        if(regexMatchCheckBox.isSelected()){
+        if (regexMatchCheckBox.isSelected()) {
             caseSensitiveCheckBox.setEnabled(false);
             caseSensitiveCheckBox.setSelected(false);
             exactMatchCheckBox.setEnabled(false);
             exactMatchCheckBox.setSelected(false);
-            instantSearchCheckBox.setEnabled(false);
-            instantSearchCheckBox.setSelected(false);
-        }else{
+        } else {
             caseSensitiveCheckBox.setEnabled(true);
             exactMatchCheckBox.setEnabled(true);
-            instantSearchCheckBox.setEnabled(true);
         }
     }//GEN-LAST:event_regexMatchCheckBoxActionPerformed
 
     private void instantSearchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instantSearchCheckBoxActionPerformed
-        if(instantSearchCheckBox.isSelected()){
+        if (instantSearchCheckBox.isSelected()) {
             regexMatchCheckBox.setEnabled(false);
             regexMatchCheckBox.setSelected(false);
-        }else{
-            if(!(caseSensitiveCheckBox.isSelected() || exactMatchCheckBox.isSelected())){
+        } else {
+            if (!(caseSensitiveCheckBox.isSelected() || exactMatchCheckBox.isSelected())) {
                 regexMatchCheckBox.setEnabled(true);
             }
-            
+
         }
     }//GEN-LAST:event_instantSearchCheckBoxActionPerformed
 
     private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             searchButtonActionPerformed(null);
         }
     }//GEN-LAST:event_searchTextFieldKeyPressed
 
     private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
-        if(instantSearchCheckBox.isSelected() & searchTextField.getText().length() > 1){
+        if (instantSearchCheckBox.isSelected() & searchTextField.getText().length() > 1) {
             searchButtonActionPerformed(null);
         }
     }//GEN-LAST:event_searchTextFieldKeyReleased
@@ -433,11 +418,6 @@ public class MainJFrameForm extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -445,13 +425,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainJFrameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainJFrameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainJFrameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainJFrameForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -472,9 +446,9 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private javax.swing.JCheckBox exactMatchCheckBox;
     private javax.swing.JMenuItem exitProgramMenuItem;
     private javax.swing.JFileChooser fileChooser;
-    private javax.swing.JPanel findedDataPanel;
-    private javax.swing.JScrollPane findedDataScrollPane;
-    private javax.swing.JTable findedDataTable;
+    private javax.swing.JPanel foundDataPanel;
+    private javax.swing.JScrollPane foundDataScrollPane;
+    private javax.swing.JTable foundDataTable;
     private javax.swing.JCheckBox instantSearchCheckBox;
     private javax.swing.JCheckBox regexMatchCheckBox;
     private javax.swing.JButton searchButton;
