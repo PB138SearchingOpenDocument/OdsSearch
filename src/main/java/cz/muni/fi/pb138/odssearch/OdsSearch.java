@@ -10,24 +10,50 @@ import java.util.List;
 /**
  * The OdsSearch class allows searching selected expressions in Open Spreadsheet Document files.
  *
- * @author Marek Urban (422252), Marek Abaffy (422572)
+ * @author Marek Urban (422252)
+ * @author Marek Abaffy (422572)
  * @version 1.0
  */
-
 public class OdsSearch {
 
     private boolean mCaseSensitive = false;
     private boolean mExactMatch = false;
+    private boolean mRegexMatch = false;
     private SpreadsheetDocument mDocument;
 
     public OdsSearch(SpreadsheetDocument document) {
         this.mDocument = document;
     }
 
-    public OdsSearch(SpreadsheetDocument document, boolean mCaseSensitive, boolean mExactMatch) {
+    public OdsSearch(SpreadsheetDocument document, boolean mCaseSensitive, boolean mExactMatch, boolean mRegexMatch) {
         this.mDocument = document;
         this.mCaseSensitive = mCaseSensitive;
         this.mExactMatch = mExactMatch;
+        this.mRegexMatch = mRegexMatch;
+    }
+
+    public boolean isCaseSensitive() {
+        return mCaseSensitive;
+    }
+
+    public void setCaseSensitive(boolean mCaseSensitive) {
+        this.mCaseSensitive = mCaseSensitive;
+    }
+
+    public boolean isExactMatch() {
+        return mExactMatch;
+    }
+
+    public void setExactMatch(boolean mExactMatch) {
+        this.mExactMatch = mExactMatch;
+    }
+
+    public boolean isRegexMatch() {
+        return mRegexMatch;
+    }
+
+    public void setRegexMatch(boolean mRegexMatch) {
+        this.mRegexMatch = mRegexMatch;
     }
 
     /**
@@ -75,7 +101,7 @@ public class OdsSearch {
                     break;
                 }
 
-                if (evaluate(table.getCellByPosition(i, j).getStringValue(), expression)) {
+                if (j != 0 && evaluate(table.getCellByPosition(i, j).getStringValue(), expression)) {
                     item = new QueryItem(i, j, table.getTableName(),
                             table.getCellByPosition(i, 0).getStringValue(), cell.getStringValue());
                     result.add(item);
@@ -93,19 +119,15 @@ public class OdsSearch {
      * @return True if strings fulfill conditions. False otherwise.
      */
     private boolean evaluate(String s1, String s2) {
-        if (mCaseSensitive) {
-            if (mExactMatch) {
-                return s1.equals(s2);
-            } else {
-                return s1.contains(s2);
-            }
-        } else {
-            if (mExactMatch) {
-                return s1.equalsIgnoreCase(s2);
-            } else {
-                return s1.toUpperCase().contains(s2.toUpperCase());
-            }
+        if (mRegexMatch) {
+            return s1.matches(s2);
         }
+
+        if (mCaseSensitive) {
+            return mExactMatch ? s1.equals(s2) : s1.contains(s2);
+        }
+
+        return mExactMatch ? s1.equalsIgnoreCase(s2) : s1.toUpperCase().contains(s2.toUpperCase());
     }
 
 }
