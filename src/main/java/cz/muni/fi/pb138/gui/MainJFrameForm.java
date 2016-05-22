@@ -5,6 +5,7 @@
  */
 package cz.muni.fi.pb138.gui;
 
+import com.hp.hpl.jena.reasoner.rulesys.builtins.Sum;
 import cz.muni.fi.pb138.odssearch.OdsSearch;
 import cz.muni.fi.pb138.odssearch.QueryItem;
 
@@ -31,6 +32,8 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private String mFilePath;
     private String mFileName;
     private SpreadsheetDocument mDocument;
+    
+    private SearchSwingWorker searchSwingWorker = new SearchSwingWorker();
 
     /**
      * Creates new form MainJFrameForm
@@ -42,6 +45,8 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
         setBorderTitle();
     }
+    
+    
 
     /**
      * Method set title in first panel
@@ -326,13 +331,23 @@ public class MainJFrameForm extends javax.swing.JFrame {
             return;
         }
 
-        if (searchTextField.getText().length() <= 1) {
-            JOptionPane.showMessageDialog(null, "Please insert at least two characters.", "Warning", JOptionPane.WARNING_MESSAGE);
+        if (searchTextField.getText().length() < 1) {
+            JOptionPane.showMessageDialog(null, "Please insert at least one characters.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        if (searchTextField.getText().length() > 1) {
+        if (searchTextField.getText().length() >= 1) {
+            searchSwingWorker = new SearchSwingWorker();
+            searchSwingWorker.execute();
+        }
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private class SearchSwingWorker extends SwingWorker<Void,Void> {
+        
+        @Override    
+        protected Void doInBackground() throws Exception {
             try {
+                searchButton.setEnabled(false);
                 OdsSearch odsSearch = new OdsSearch(mDocument);
                 odsSearch.setExactMatch(exactMatchCheckBox.isSelected());
                 odsSearch.setCaseSensitive(caseSensitiveCheckBox.isSelected());
@@ -357,10 +372,13 @@ public class MainJFrameForm extends javax.swing.JFrame {
                 }
             } catch (Exception ex) {
                 Logger.getLogger(MainJFrameForm.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                searchButton.setEnabled(true);
             }
+            return null;
         }
-    }//GEN-LAST:event_searchButtonActionPerformed
-
+    }
+    
     private void exactMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactMatchCheckBoxActionPerformed
         setRegexButtonState();
     }//GEN-LAST:event_exactMatchCheckBoxActionPerformed
@@ -457,3 +475,5 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private javax.swing.JTextField searchTextField;
     // End of variables declaration//GEN-END:variables
 }
+
+
