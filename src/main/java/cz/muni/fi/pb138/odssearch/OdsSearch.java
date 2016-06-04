@@ -102,7 +102,7 @@ public class OdsSearch {
                 }
 
                 if (j != 0 && evaluate(table.getCellByPosition(i, j).getStringValue(), expression)) {
-                    item = new QueryItem(i, j, table.getTableName(),
+                    item = new QueryItem(i + 1, j + 1, table.getTableName(),
                             table.getCellByPosition(i, 0).getStringValue(), cell.getStringValue());
                     result.add(item);
                 }
