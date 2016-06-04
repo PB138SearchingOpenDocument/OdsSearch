@@ -7,18 +7,15 @@ package cz.muni.fi.pb138.gui;
 
 import cz.muni.fi.pb138.odssearch.OdsSearch;
 import cz.muni.fi.pb138.odssearch.QueryItem;
-
-import java.awt.event.KeyEvent;
-
 import org.odftoolkit.simple.SpreadsheetDocument;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Ladislav Otoupal (422520)
@@ -31,6 +28,43 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private String mFilePath;
     private String mFileName;
     private SpreadsheetDocument mDocument;
+    private boolean mSearching = false;
+
+    private List<QueryItem> mItems = new ArrayList<>();
+
+    private class ItemFinder extends SwingWorker<Boolean, Object> {
+
+        @Override
+        public Boolean doInBackground() {
+            final OdsSearch odsSearch = new OdsSearch(mDocument);
+            odsSearch.setExactMatch(exactMatchCheckBox.isSelected());
+            odsSearch.setCaseSensitive(caseSensitiveCheckBox.isSelected());
+            odsSearch.setRegexMatch(regexMatchCheckBox.isSelected());
+            mItems = odsSearch.search(searchTextField.getText());
+            return true;
+        }
+
+        @Override
+        protected void done() {
+            mSearching = false;
+            searchButton.setText("Search");
+
+            DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
+
+            for (QueryItem item : mItems) {
+                Object[] row = {
+                        item.getTableName(),
+                        item.getCellValue(),
+                        item.getColumnName(),
+                        item.getCol() + 1,
+                        item.getRow() + 1};
+
+                model.addRow(row);
+            }
+
+            model.fireTableDataChanged();
+        }
+    }
 
     /**
      * Creates new form MainJFrameForm
@@ -88,7 +122,6 @@ public class MainJFrameForm extends javax.swing.JFrame {
         caseSensitiveCheckBox = new javax.swing.JCheckBox();
         exactMatchCheckBox = new javax.swing.JCheckBox();
         regexMatchCheckBox = new javax.swing.JCheckBox();
-        instantSearchCheckBox = new javax.swing.JCheckBox();
         foundDataPanel = new javax.swing.JPanel();
         foundDataScrollPane = new javax.swing.JScrollPane();
         foundDataTable = new javax.swing.JTable();
@@ -107,10 +140,6 @@ public class MainJFrameForm extends javax.swing.JFrame {
         searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 searchTextFieldKeyPressed(evt);
-            }
-
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                searchTextFieldKeyReleased(evt);
             }
         });
 
@@ -145,13 +174,6 @@ public class MainJFrameForm extends javax.swing.JFrame {
             }
         });
 
-        instantSearchCheckBox.setText("Instant search");
-        instantSearchCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                instantSearchCheckBoxActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout searchStringPanelLayout = new javax.swing.GroupLayout(searchStringPanel);
         searchStringPanel.setLayout(searchStringPanelLayout);
         searchStringPanelLayout.setHorizontalGroup(
@@ -168,8 +190,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
                                 .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(caseSensitiveCheckBox)
                                         .addComponent(exactMatchCheckBox)
-                                        .addComponent(regexMatchCheckBox)
-                                        .addComponent(instantSearchCheckBox))
+                                        .addComponent(regexMatchCheckBox))
                                 .addContainerGap(36, Short.MAX_VALUE))
         );
         searchStringPanelLayout.setVerticalGroup(
@@ -189,9 +210,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(exactMatchCheckBox)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(regexMatchCheckBox)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(instantSearchCheckBox)))
+                                                .addComponent(regexMatchCheckBox)))
                                 .addGap(39, 39, 39))
         );
 
@@ -331,35 +350,26 @@ public class MainJFrameForm extends javax.swing.JFrame {
             return;
         }
 
+        mSearching = !mSearching;
+
         if (searchTextField.getText().length() > 1) {
-            try {
-                OdsSearch odsSearch = new OdsSearch(mDocument);
-                odsSearch.setExactMatch(exactMatchCheckBox.isSelected());
-                odsSearch.setCaseSensitive(caseSensitiveCheckBox.isSelected());
-                odsSearch.setRegexMatch(regexMatchCheckBox.isSelected());
-                List<QueryItem> items = odsSearch.search(searchTextField.getText());
 
-                DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
-                model.getDataVector().removeAllElements();
+            DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
+            model.getDataVector().removeAllElements();
+            model.fireTableDataChanged();
 
-                if (!items.isEmpty()) {
-                    for (QueryItem item : items) {
-                        Object[] row = {item.getTableName(), item.getCellValue(), item.getColumnName()
-                                , item.getCol(), item.getRow()};
+            ItemFinder itemFinder = new ItemFinder();
 
-                        model.addRow(row);
-                    }
-
-                    foundDataTable.setModel(model);
-                } else {
-                    Object[] row = {null, null, null, null, null};
-                    model.addRow(row);
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(MainJFrameForm.class.getName()).log(Level.SEVERE, null, ex);
+            if (mSearching) {
+                searchButton.setText("Stop");
+                itemFinder.execute();
+            } else {
+                searchButton.setText("Search");
+                itemFinder.cancel(true);
             }
+
         }
-    }//GEN-LAST:event_searchButtonActionPerformed
+    }
 
     private void exactMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactMatchCheckBoxActionPerformed
         setRegexButtonState();
@@ -390,29 +400,12 @@ public class MainJFrameForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_regexMatchCheckBoxActionPerformed
 
-    private void instantSearchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instantSearchCheckBoxActionPerformed
-        if (instantSearchCheckBox.isSelected()) {
-            regexMatchCheckBox.setEnabled(false);
-            regexMatchCheckBox.setSelected(false);
-        } else {
-            if (!(caseSensitiveCheckBox.isSelected() || exactMatchCheckBox.isSelected())) {
-                regexMatchCheckBox.setEnabled(true);
-            }
-
-        }
-    }//GEN-LAST:event_instantSearchCheckBoxActionPerformed
 
     private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             searchButtonActionPerformed(null);
         }
     }//GEN-LAST:event_searchTextFieldKeyPressed
-
-    private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
-        if (instantSearchCheckBox.isSelected() & searchTextField.getText().length() > 1) {
-            searchButtonActionPerformed(null);
-        }
-    }//GEN-LAST:event_searchTextFieldKeyReleased
 
     /**
      * @param args the command line arguments
@@ -457,3 +450,5 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private javax.swing.JTextField searchTextField;
     // End of variables declaration//GEN-END:variables
 }
+
+
