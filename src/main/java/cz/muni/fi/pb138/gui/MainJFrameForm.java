@@ -5,21 +5,17 @@
  */
 package cz.muni.fi.pb138.gui;
 
-import com.hp.hpl.jena.reasoner.rulesys.builtins.Sum;
 import cz.muni.fi.pb138.odssearch.OdsSearch;
 import cz.muni.fi.pb138.odssearch.QueryItem;
-
-import java.awt.event.KeyEvent;
-
 import org.odftoolkit.simple.SpreadsheetDocument;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Ladislav Otoupal (422520)
@@ -32,8 +28,39 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private String mFilePath;
     private String mFileName;
     private SpreadsheetDocument mDocument;
-    
-    private SearchSwingWorker searchSwingWorker = new SearchSwingWorker();
+    private boolean mSearching = false;
+
+    private List<QueryItem> mItems = new ArrayList<>();
+
+    private class ItemFinder extends SwingWorker<Boolean, Object> {
+
+        @Override
+        public Boolean doInBackground() {
+            final OdsSearch odsSearch = new OdsSearch(mDocument);
+            odsSearch.setExactMatch(exactMatchCheckBox.isSelected());
+            odsSearch.setCaseSensitive(caseSensitiveCheckBox.isSelected());
+            odsSearch.setRegexMatch(regexMatchCheckBox.isSelected());
+            mItems = odsSearch.search(searchTextField.getText());
+            return true;
+        }
+
+        @Override
+        protected void done() {
+            mSearching = false;
+            searchButton.setText("Search");
+
+            DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
+
+            for (QueryItem item : mItems) {
+                Object[] row = {item.getTableName(), item.getCellValue(), item.getColumnName()
+                        , item.getCol(), item.getRow()};
+
+                model.addRow(row);
+            }
+
+            foundDataTable.setModel(model);
+        }
+    }
 
     /**
      * Creates new form MainJFrameForm
@@ -45,7 +72,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
         setBorderTitle();
     }
-    
+
     /**
      * Method set title in first panel
      */
@@ -91,9 +118,9 @@ public class MainJFrameForm extends javax.swing.JFrame {
         caseSensitiveCheckBox = new javax.swing.JCheckBox();
         exactMatchCheckBox = new javax.swing.JCheckBox();
         regexMatchCheckBox = new javax.swing.JCheckBox();
-        findedDataPanel = new javax.swing.JPanel();
-        findedDataScrollPane = new javax.swing.JScrollPane();
-        findedDataTable = new javax.swing.JTable();
+        foundDataPanel = new javax.swing.JPanel();
+        foundDataScrollPane = new javax.swing.JScrollPane();
+        foundDataTable = new javax.swing.JTable();
         MenuBar = new javax.swing.JMenuBar();
         Menu = new javax.swing.JMenu();
         chooseFileMenuItem = new javax.swing.JMenuItem();
@@ -146,91 +173,91 @@ public class MainJFrameForm extends javax.swing.JFrame {
         javax.swing.GroupLayout searchStringPanelLayout = new javax.swing.GroupLayout(searchStringPanel);
         searchStringPanel.setLayout(searchStringPanelLayout);
         searchStringPanelLayout.setHorizontalGroup(
-            searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchStringPanelLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(searchStringPanelLayout.createSequentialGroup()
-                        .addComponent(searchLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(caseSensitiveCheckBox)
-                    .addComponent(exactMatchCheckBox)
-                    .addComponent(regexMatchCheckBox))
-                .addContainerGap(36, Short.MAX_VALUE))
+                searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                                .addComponent(searchLabel)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(caseSensitiveCheckBox)
+                                        .addComponent(exactMatchCheckBox)
+                                        .addComponent(regexMatchCheckBox))
+                                .addContainerGap(36, Short.MAX_VALUE))
         );
         searchStringPanelLayout.setVerticalGroup(
-            searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchStringPanelLayout.createSequentialGroup()
-                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(searchStringPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(searchLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(searchStringPanelLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(caseSensitiveCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(exactMatchCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(regexMatchCheckBox)))
-                .addGap(39, 39, 39))
+                searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addGroup(searchStringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(searchLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addGap(18, 18, 18)
+                                                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(searchStringPanelLayout.createSequentialGroup()
+                                                .addGap(21, 21, 21)
+                                                .addComponent(caseSensitiveCheckBox)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(exactMatchCheckBox)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(regexMatchCheckBox)))
+                                .addGap(39, 39, 39))
         );
 
-        findedDataPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Finded data"));
+        foundDataPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Found fields"));
 
-        findedDataTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Table", "Cell value", "Column name", "Column number", "Row number"
-            }
+        foundDataTable.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{
+                        {null, null, null, null, null}
+                },
+                new String[]{
+                        "Table", "Cell value", "Column name", "Column number", "Row number"
+                }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            Class[] types = new Class[]{
+                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
         });
-        findedDataScrollPane.setViewportView(findedDataTable);
-        if (findedDataTable.getColumnModel().getColumnCount() > 0) {
-            findedDataTable.getColumnModel().getColumn(3).setMinWidth(100);
-            findedDataTable.getColumnModel().getColumn(3).setPreferredWidth(100);
-            findedDataTable.getColumnModel().getColumn(3).setMaxWidth(100);
-            findedDataTable.getColumnModel().getColumn(4).setMinWidth(100);
-            findedDataTable.getColumnModel().getColumn(4).setPreferredWidth(100);
-            findedDataTable.getColumnModel().getColumn(4).setMaxWidth(100);
+        foundDataScrollPane.setViewportView(foundDataTable);
+        if (foundDataTable.getColumnModel().getColumnCount() > 0) {
+            foundDataTable.getColumnModel().getColumn(3).setMinWidth(100);
+            foundDataTable.getColumnModel().getColumn(3).setPreferredWidth(100);
+            foundDataTable.getColumnModel().getColumn(3).setMaxWidth(100);
+            foundDataTable.getColumnModel().getColumn(4).setMinWidth(100);
+            foundDataTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+            foundDataTable.getColumnModel().getColumn(4).setMaxWidth(100);
         }
 
-        javax.swing.GroupLayout findedDataPanelLayout = new javax.swing.GroupLayout(findedDataPanel);
-        findedDataPanel.setLayout(findedDataPanelLayout);
-        findedDataPanelLayout.setHorizontalGroup(
-            findedDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(findedDataPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(findedDataScrollPane)
-                .addContainerGap())
+        javax.swing.GroupLayout foundDataPanelLayout = new javax.swing.GroupLayout(foundDataPanel);
+        foundDataPanel.setLayout(foundDataPanelLayout);
+        foundDataPanelLayout.setHorizontalGroup(
+                foundDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(foundDataPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(foundDataScrollPane)
+                                .addContainerGap())
         );
-        findedDataPanelLayout.setVerticalGroup(
-            findedDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(findedDataPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(findedDataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                .addContainerGap())
+        foundDataPanelLayout.setVerticalGroup(
+                foundDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(foundDataPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(foundDataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                                .addContainerGap())
         );
 
         Menu.setText("File");
 
-        chooseFileMenuItem.setText("Choose file");
+        chooseFileMenuItem.setText("Open file");
         chooseFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseFileMenuItemActionPerformed(evt);
@@ -253,16 +280,16 @@ public class MainJFrameForm extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(searchStringPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(findedDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(searchStringPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(foundDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(searchStringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(findedDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(searchStringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(foundDataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -314,66 +341,32 @@ public class MainJFrameForm extends javax.swing.JFrame {
             return;
         }
 
-        searchSwingWorker = new SearchSwingWorker();
-        searchSwingWorker.execute();       
-    }//GEN-LAST:event_searchButtonActionPerformed
+        if (searchTextField.getText().length() <= 1) {
+            JOptionPane.showMessageDialog(null, "Please insert at least two characters.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    private class SearchSwingWorker extends SwingWorker<Void,Void> {
-        
-        @Override    
-        protected Void doInBackground() throws Exception {
-            boolean caseBox = caseSensitiveCheckBox.isEnabled();
-            boolean exactBox = exactMatchCheckBox.isEnabled();
-            boolean regexBox = regexMatchCheckBox.isEnabled();
-            
-            try {
-                searchButton.setEnabled(false);
-                
-                disableBoxes();
-                OdsSearch odsSearch = new OdsSearch(mDocument);
-                odsSearch.setExactMatch(exactMatchCheckBox.isSelected());
-                odsSearch.setCaseSensitive(caseSensitiveCheckBox.isSelected());
-                odsSearch.setRegexMatch(regexMatchCheckBox.isSelected());
-                List<QueryItem> items = odsSearch.search(searchTextField.getText());
+        mSearching = !mSearching;
 
-                DefaultTableModel model = (DefaultTableModel) findedDataTable.getModel();
-                model.getDataVector().removeAllElements();
+        if (searchTextField.getText().length() > 1) {
 
-                if (!items.isEmpty()) {
-                    for (QueryItem item : items) {
-                        Object[] row = {item.getTableName(), item.getCellValue(), item.getColumnName()
-                                , item.getCol(), item.getRow()};
+            DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
+            model.getDataVector().removeAllElements();
+            foundDataTable.setModel(model);
 
-                        model.addRow(row);
-                    }
+            ItemFinder itemFinder = new ItemFinder();
 
-                    findedDataTable.setModel(model);
-                } else {
-                    Object[] row = {null, null, null, null, null};
-                    model.addRow(row);
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(MainJFrameForm.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                searchButton.setEnabled(true);
-                enableBox(caseBox, exactBox, regexBox);
+            if (mSearching) {
+                searchButton.setText("Stop");
+                itemFinder.execute();
+            } else {
+                searchButton.setText("Search");
+                itemFinder.cancel(true);
             }
-            return null;
-        }
 
-        private void disableBoxes() {
-            caseSensitiveCheckBox.setEnabled(false);
-            exactMatchCheckBox.setEnabled(false);
-            regexMatchCheckBox.setEnabled(false);
-        }
-
-        private void enableBox(boolean caseBox, boolean exactBox, boolean regexBox) {
-            caseSensitiveCheckBox.setEnabled(caseBox);
-            exactMatchCheckBox.setEnabled(exactBox);
-            regexMatchCheckBox.setEnabled(regexBox);
         }
     }
-    
+
     private void exactMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactMatchCheckBoxActionPerformed
         setRegexButtonState();
     }//GEN-LAST:event_exactMatchCheckBoxActionPerformed
@@ -402,6 +395,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
             exactMatchCheckBox.setEnabled(true);
         }
     }//GEN-LAST:event_regexMatchCheckBoxActionPerformed
+
 
     private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -441,9 +435,10 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private javax.swing.JCheckBox exactMatchCheckBox;
     private javax.swing.JMenuItem exitProgramMenuItem;
     private javax.swing.JFileChooser fileChooser;
-    private javax.swing.JPanel findedDataPanel;
-    private javax.swing.JScrollPane findedDataScrollPane;
-    private javax.swing.JTable findedDataTable;
+    private javax.swing.JPanel foundDataPanel;
+    private javax.swing.JScrollPane foundDataScrollPane;
+    private javax.swing.JTable foundDataTable;
+    private javax.swing.JCheckBox instantSearchCheckBox;
     private javax.swing.JCheckBox regexMatchCheckBox;
     private javax.swing.JButton searchButton;
     private javax.swing.JLabel searchLabel;
