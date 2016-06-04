@@ -52,13 +52,17 @@ public class MainJFrameForm extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
 
             for (QueryItem item : mItems) {
-                Object[] row = {item.getTableName(), item.getCellValue(), item.getColumnName()
-                        , item.getCol(), item.getRow()};
+                Object[] row = {
+                        item.getTableName(),
+                        item.getCellValue(),
+                        item.getColumnName(),
+                        item.getCol() + 1,
+                        item.getRow() + 1};
 
                 model.addRow(row);
             }
 
-            foundDataTable.setModel(model);
+            model.fireTableDataChanged();
         }
     }
 
@@ -352,7 +356,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
             DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
             model.getDataVector().removeAllElements();
-            foundDataTable.setModel(model);
+            model.fireTableDataChanged();
 
             ItemFinder itemFinder = new ItemFinder();
 
