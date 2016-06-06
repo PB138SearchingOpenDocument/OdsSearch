@@ -1,36 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="windows-1250"?>
 <article xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
 	<info>
 		<title>PB138 OdsSearch projekt report</title>
 		<author>
-			<personname>Tomáš Ševcù</personname>
+			<personname>TomÃ¡Å¡ Å evcÅ¯</personname>
 			<email>422519@mail.muni.cz</email>
 		</author>
 	</info>
 		
 	<section xml:id="introduction">
-		<title>Úvod</title>
+		<title>Ãšvod</title>
 		<para>
-			Naším cílem bylo vytvoøit jednoduchou aplikaci v javì, která mìla poskytovat vyhledávání dat v souboru ve formátu ODS.
+			NaÅ¡Ã­m cÃ­lem bylo vytvoÅ™it jednoduchou aplikaci v javÄ›, kterÃ¡ mÄ›la poskytovat vyhledÃ¡vÃ¡nÃ­ dat v souboru ve formÃ¡tu ODS.
 		</para>
 	</section>
 	
 	<section xml:id="solution">
-		<title>Popis øešení</title>
+		<title>Popis Å™eÅ¡enÃ­</title>
 		<para>
-			Já jsem se podílel na návrhu uivatelského rozhraní aplikace. Na to jsme vyuili knihovny Swing, která je standartní souèástí javy. Dále jsem zaloil projekt na Github a vytvoøil závìreènou prezentaci.
+			JÃ¡ jsem se podÃ­lel na nÃ¡vrhu uÅ¾ivatelskÃ©ho rozhranÃ­ aplikace. Na to jsme vyuÅ¾ili knihovny Swing, kterÃ¡ je standartnÃ­ souÄÃ¡stÃ­ javy. DÃ¡le jsem zaloÅ¾il projekt na Github a vytvoÅ™il zÃ¡vÄ›reÄnou prezentaci.
 		</para>
 
 		<para>
-			Nejvprve jsem se podílel na návrhu grafického rozhraní, které jsem navrhoval spolu s Ladislavem. Na to jsme vyuili knihovny Swing, která je souèástí javy. Pomocí Swingu jsme vytvoøili základní návrh, kterı jsme postupnì rozšiøovali: vıbìr souboru, napojení na backend, zobrazení vısledkù, chybové hlášky. Vısledek jsme ještì zdokonalili napø. pøi vıbìru souboru se zobrazují pouze ODS soubory. Nìkteré funkce jako znemonìní vıbìru checkboxù jsme pøedìlávali na nìkolikrát, protoe jsme kadı mìli jinou myšlenku, jak by to mìlo fungovat.
+			Nejvprve jsem se podÃ­lel na nÃ¡vrhu grafickÃ©ho rozhranÃ­, kterÃ© jsem navrhoval spolu s Ladislavem. Na to jsme vyuÅ¾ili knihovny Swing, kterÃ¡ je souÄÃ¡stÃ­ javy. PomocÃ­ Swingu jsme vytvoÅ™ili zÃ¡kladnÃ­ nÃ¡vrh, kterÃ½ jsme postupnÄ› rozÅ¡iÅ™ovali: vÃ½bÄ›r souboru, napojenÃ­ na backend, zobrazenÃ­ vÃ½sledkÅ¯, chybovÃ© hlÃ¡Å¡ky. VÃ½sledek jsme jeÅ¡tÄ› zdokonalili napÅ™. pÅ™i vÃ½bÄ›ru souboru se zobrazujÃ­ pouze ODS soubory. NÄ›kterÃ© funkce jako znemoÅ¾nÄ›nÃ­ vÃ½bÄ›ru checkboxÅ¯ jsme pÅ™edÄ›lÃ¡vali na nÄ›kolikrÃ¡t, protoÅ¾e jsme kaÅ¾dÃ½ mÄ›li jinou myÅ¡lenku, jak by to mÄ›lo fungovat.
 		</para>	
 	</section>
 	
 	<section xml:id="conclusion">
-		<title>Shrnutí</title>
+		<title>ShrnutÃ­</title>
 		<para>
-			Tento projekt pro mì byl velmi nauènı, protoe to byl pro mì byl první vìtší skupinovı projekt. Nauèil jsem se pracovat na GitHub. S vıslednou funkcionalitou programu jsem spokojenı.
-			Zdrojovı kód vıslednej aplikácie je uverejnenı na stránke Github spolu s detailnejším popisom projektu.
+			Tento projekt pro mÄ› byl velmi nauÄnÃ½, protoÅ¾e to byl pro mÄ› byl prvnÃ­ vÄ›tÅ¡Ã­ skupinovÃ½ projekt. NauÄil jsem se pracovat na GitHub. S vÃ½slednou funkcionalitou programu jsem spokojenÃ½.
+			ZdrojovÃ½ kÃ³d vÃ½slednej aplikÃ¡cie je uverejnenÃ½ na strÃ¡nke Github spolu s detailnejÅ¡Ã­m popisom projektu.
 		</para>
 	</section>
 </article>
