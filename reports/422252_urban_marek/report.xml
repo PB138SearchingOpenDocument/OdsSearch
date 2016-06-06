@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	<info>
+		<title>OdsSearch report</title>
+		<author>
+			<personname>Marek Urban</personname>
+			<email>422252@mail.muni.cz</email>
+		</author>
+	</info>
+		
+	<section xml:id="introduction">
+		<title>Úvod</title>
+		<para>
+			Našou úlohou bolo implementovať jednoduchú java aplikáciu, ktorá by užívateľovi umožňovala vyhľadávať frázy v Open Spreadsheet dokumente.
+		</para>
+	</section>
+	
+	<section xml:id="solution">
+		<title>Popis riešenia</title>
+		<para>
+			Mojou úlohou bolo vytvoriť triedy pre spracovanie ODS dokumentu slúžiace ako backend aplikácie OdsSearch. Triedy používajú verejnú knižnicu Apache ODF Toolkit, API pre spracovanie ODF dokumentov s ktorou som sa pred začatím projektu čiastočne oboznámil. Backend obsahuje dve triedy - OdsSearch a QueryItem. OdsSearch zachytáva veškerú logiku aplikácie pre spracovanie vstupného súboru, QueryItem je trieda reprezentujúca záznam v tabuľke.
+		</para>
+
+		<para>
+			Ďalšou časťou mojej práce bolo vytvorenie testovacích dát. Na prácu s aplikáciou som vytvoril dokument obsahujúci 5 tabuliek po 100 záznamov s dátami v 5 stĺpcoch.
+		</para>
+
+		<para>
+			Pre prehľadnosť dokumentácie celého projektu som vygeneroval webové stránky pomocou GitHub Pages a upravil obsah, vrátane diagramu užitia, obrázku aplikácie a odkazu na dokumentáciu Javadoc.
+		</para>
+	</section>
+	
+	<section xml:id="conclusion">
+		<title>Zhrnutie</title>
+		<para>
+			Počas práce na projekte som sa podieľal aj na refaktorizácií kódu, či testovaní a návrhu vylepšení aplikácie.
+		</para>
+	</section>
+</article>

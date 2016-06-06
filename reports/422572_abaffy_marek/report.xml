@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	<info>
+		<title>PB138 OdsSearch projekt report</title>
+		<author>
+			<personname>Marek Abaffy</personname>
+			<email>422572@mail.muni.cz</email>
+		</author>
+	</info>
+		
+	<section xml:id="introduction">
+		<title>Úvod</title>
+		<para>
+			Našou úlohou bolo implementovať jednoduchú java aplikácia, ktorá by užívateľovi umožňovala vyhľadávať frázy v Open Spreadsheet dokumente.
+		</para>
+	</section>
+	
+	<section xml:id="solution">
+		<title>Popis riešenia</title>
+		<para>
+			Na uľahčenie práce sme si zvolili knižnicu Apache ODF Toolkit, ktorá nám poskytla základné rozhranie na prehľadávanie tabuliek. S využitím tejto API sme implementovali triedu OdsSearch, ktorá poskytuje akúsi nadstavbu a s využitím Odf Toolkit umožňuje prehľadávanie vybraného súboru. V rámci tímu sme sa rozhodli, že zadanie rozšírime a užívateľovi poskytneme možnosť vyhľadávať na základe istých volieb. API OdsSearch teda poskytuje možnosť nastavenia typov vyhľadávania. Dostupné je vyhľadávanie rozlišujúce veľkosť znakov, vyhľadávanie podreťazcov a taktiež vyhľadávanie podľa regulérnehu výrazu. 
+		</para>
+
+		<para>
+			Mojou hlavnou úlohou bolo navrhnúť štruktúru projektu a vytvoriť jeho základnú kostru, práca s vybranou knižnicou a celková organizácia. V rámci programovania som vypomáhal na implementácií triedy OdsSearch a refaktoroval výsledný kód.
+			Čo sa týka organizácie, mojou úlohou bolo komunikovať s vedúcim projektu a spolupráca pri správe stránok projektu.
+		</para>	
+	</section>
+	
+	<section xml:id="conclusion">
+		<title>Zhrnutie</title>
+		<para>
+			Zdrojový kód výslednej aplikácie je uverejnený na stránke Github spolu s detailnejším popisom projektu.
+		</para>
+	</section>
+</article>
