@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	
+  <info>
+		<title>PB138 OdsSearch - Závěrečná zpráva</title>
+		<author>
+			<personname>Ladislav Otoupal</personname>
+			<email>otoupal93@seznam.cz</email>
+		</author>
+	</info>
+		
+	<section xml:id="introduction">
+		<title>Úvod</title>
+    <para>Naším cílem bylo vytvořit jednoduchou aplikaci v javě, která měla poskytovat vyhledávání dat v souboru ve formátu ODS.</para>
+	</section>
+	
+	<section xml:id="solution">
+		<title>Můj přínos</title>
+    <para>Podílel jsem se na návrhu uživatelského rozhraní naší aplikace a jeho samotné implementaci. Na tvorbu rozhraní jsme použili standardní knihovnu jazyka java swing. Dále jsem finalizoval podobu wiki stránek a pomáhal s tvorbou prezentace.</para>
+    
+    <para>Nejdříve jsem se podílel na návrhu grafického rozhraní. To jsme navrhovali spolu s Tomášem. Napojení grafického rozhraní na logiku aplikace provedl Tomáš. Mým hlavním úkolem bylo reagovat na připomínky kolegů, kteří psali backend aplikace a podle jejich připomínek upravovat chování jednotlivých prvků grafického rozhraní. To jsme řešili pomocí issue trackingu který nám poskytoval github. Dále jsem také realizoval spouštění vyhledávání ve vlákně a příšlušné chování prvků grafického rozhraní. K tomu jsem použil třídu swingworker, kterou nám taktéž poskytuje java. Původně jsem chtěl ještě uživateli poskytnout možnost výběru "instantního vyhledávání". Aplikace měla uživateli poskytnout možnost vyhledávání a zobrazování výsledků v reálném čase, něco na způsob zobrazování výsledků vyhledávání v googlu, a ne až po stisku tlačítka search(případně klávesy enter). Nakonec jsme se s kolegy rozhodli od tohoto kroku ustoupit a funkcionalitu zrušit. Při prohledávání menšího objemu dat vyhledávání fungovalo dobře. Problém nastal s rostoucím objemem prohledávaných dat. </para>
+	</section>
+	
+	<section xml:id="conclusion">
+		<title>Závěr</title>
+    <para>Do wiki stránek jsem přidal stránku s dokumenatací a pomohl vytvořit pár slajdů v prezentaci. Myslím, že zadání se nám podařilo dodržet a program by měl poskytovat očekávanou funkcionalitu.</para>
+	</section>
+</article>
