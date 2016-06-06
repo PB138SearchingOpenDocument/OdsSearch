@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	<info>
+		<title>PB138 OdsSearch projekt report</title>
+		<author>
+			<personname>Tomáš Ševcù</personname>
+			<email>422519@mail.muni.cz</email>
+		</author>
+	</info>
+		
+	<section xml:id="introduction">
+		<title>Úvod</title>
+		<para>
+			Naším cílem bylo vytvoøit jednoduchou aplikaci v javì, která mìla poskytovat vyhledávání dat v souboru ve formátu ODS.
+		</para>
+	</section>
+	
+	<section xml:id="solution">
+		<title>Popis øešení</title>
+		<para>
+			Já jsem se podílel na návrhu uživatelského rozhraní aplikace. Na to jsme využili knihovny Swing, která je standartní souèástí javy. Dále jsem založil projekt na Github a vytvoøil závìreènou prezentaci.
+		</para>
+
+		<para>
+			Nejvprve jsem se podílel na návrhu grafického rozhraní, které jsem navrhoval spolu s Ladislavem. Na to jsme využili knihovny Swing, která je souèástí javy. Pomocí Swingu jsme vytvoøili základní návrh, který jsme postupnì rozšiøovali: výbìr souboru, napojení na backend, zobrazení výsledkù, chybové hlášky. Výsledek jsme ještì zdokonalili napø. pøi výbìru souboru se zobrazují pouze ODS soubory. Nìkteré funkce jako znemožnìní výbìru checkboxù jsme pøedìlávali na nìkolikrát, protože jsme každý mìli jinou myšlenku, jak by to mìlo fungovat.
+		</para>	
+	</section>
+	
+	<section xml:id="conclusion">
+		<title>Shrnutí</title>
+		<para>
+			Tento projekt pro mì byl velmi nauèný, protože to byl pro mì byl první vìtší skupinový projekt. Nauèil jsem se pracovat na GitHub. S výslednou funkcionalitou programu jsem spokojený.
+			Zdrojový kód výslednej aplikácie je uverejnený na stránke Github spolu s detailnejším popisom projektu.
+		</para>
+	</section>
+</article>
