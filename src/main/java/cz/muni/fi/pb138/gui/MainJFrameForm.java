@@ -29,6 +29,10 @@ public class MainJFrameForm extends javax.swing.JFrame {
     private String mFileName;
     private SpreadsheetDocument mDocument;
     private boolean mSearching = false;
+    
+    private boolean caseBox = true;
+    private boolean exactBox = true;
+    private boolean regexBox = true;      
 
     private List<QueryItem> mItems = new ArrayList<>();
 
@@ -61,7 +65,7 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
                 model.addRow(row);
             }
-
+            enableBoxes(caseBox, exactBox, regexBox);
             model.fireTableDataChanged();
         }
     }
@@ -338,21 +342,21 @@ public class MainJFrameForm extends javax.swing.JFrame {
      *
      * @param evt event argument
      */
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
 
         if (mDocument == null) {
             JOptionPane.showMessageDialog(this, "No file selected!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (searchTextField.getText().length() <= 1) {
-            JOptionPane.showMessageDialog(null, "Please insert at least two characters.", "Warning", JOptionPane.WARNING_MESSAGE);
+        if (searchTextField.getText().length() < 1) {
+            JOptionPane.showMessageDialog(null, "Please insert at least onr characters.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         mSearching = !mSearching;
 
-        if (searchTextField.getText().length() > 1) {
+        if (searchTextField.getText().length() >= 1) {
 
             DefaultTableModel model = (DefaultTableModel) foundDataTable.getModel();
             model.getDataVector().removeAllElements();
@@ -362,14 +366,32 @@ public class MainJFrameForm extends javax.swing.JFrame {
 
             if (mSearching) {
                 searchButton.setText("Stop");
+                caseBox = caseSensitiveCheckBox.isEnabled();
+                exactBox = exactMatchCheckBox.isEnabled();
+                regexBox = regexMatchCheckBox.isEnabled();
+                disableBoxes();
                 itemFinder.execute();
             } else {
-                searchButton.setText("Search");
+                searchButton.setText("Search");                
                 itemFinder.cancel(true);
+                enableBoxes(caseBox, exactBox, regexBox);
             }
 
         }
     }
+    
+    private void disableBoxes() {
+        caseSensitiveCheckBox.setEnabled(false);
+        exactMatchCheckBox.setEnabled(false);
+        regexMatchCheckBox.setEnabled(false);
+        }
+ 
+    private void enableBoxes(boolean caseBox, boolean exactBox, boolean regexBox) {
+        caseSensitiveCheckBox.setEnabled(caseBox);
+        exactMatchCheckBox.setEnabled(exactBox);
+        regexMatchCheckBox.setEnabled(regexBox);
+        }
+    
 
     private void exactMatchCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exactMatchCheckBoxActionPerformed
         setRegexButtonState();
